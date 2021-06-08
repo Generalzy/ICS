@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <table class="table-hover table table-bordered">
+        <thead>
+            <tr>
+                <th>商品名</th>
+                <th>库存量</th>
+                <th>生产厂家</th>
+                <th>型号</th>
+                <th>规格</th>
+            </tr>
+        </thead>
+    <tbody>
+    {% for commodity in new_commodity_list %}
+    <tr>
+        <td>{{ commodity.name }}</td>
+        <td>{{ commodity.count }}</td>
+{#        <td>{{ commodity.factory.all}}</td>#}
+        <td>
+            {% for foo in commodity.factory.all %}
+            {{ foo.name }}
+            {% endfor %}
+        </td>
+        <td>{{ commodity.type }}</td>
+        <td>{{ commodity.standard }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    <div class="pull-right">
+        {{ page_obj.page_html|safe }}
+    </div>
+{% endblock %}

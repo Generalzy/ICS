@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    {% load static %}
+    <script src="{% static 'js/jQuery3.6.0.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/sweetalert.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sweetalert.css' %}">
+    <style>
+		body{
+			background-image: url({% static 'img/face.jpg' %});
+            background-size: 100% auto;
+		}
+	</style>
+</head>
+<body>
+<div class="container-fluid">
+    <br>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-md-3 col-md-offset-8"style="background-color: white">
+            <h1 class="text-center">注册</h1>
+            <form id="myform"> {#不用form表单提交#}
+                {% csrf_token %}
+                {% for form in form_obj %}
+                    <div class="form-group">
+                        <label for="{{ form.auto_id }}">{{ form.label }}</label>
+                        {{ form }}
+                        <span style="color:red" class="pull-right"></span>
+                    </div>
+                {% endfor %}
+                <div class="form-group">
+                    <label for="myfile">企业标识
+                        {% load static %}
+                        <img src="{% static 'img/default.jpg' %}" alt="" id="myimg" style="width: 100px;margin-left: 10px">
+                    </label>
+                    <input type="file" id="myfile" name="avatar" style="display: none">
+                </div>
+                <input type="button" class="btn btn-primary pull-right btn-block" value="注册" id="submit">
+            </form>
+            <br>
+            <br>
+        </div>
+    </div>
+</div>
+<script>
+    $('#myfile').change(function (){
+        //文件阅读器对象
+        //先生成文件阅读器对象
+        let myFileReaderObj=new FileReader();
+        //获取用户文件
+        let fileObj=$(this)[0].files[0];
+        //将文件对象交给阅读器
+        myFileReaderObj.readAsDataURL(fileObj) //异步操作 io操作 文件未读完就执行下面
+        //将文件展示
+        myFileReaderObj.onload=function (){
+            $('#myimg').attr('src',myFileReaderObj.result)
+        }
+    })
+
+    $('#submit').click(function (){
+        //发送ajax
+        let formDataObj=new FormData();
+        //添加普通键值对
+        $.each($('#myform').serializeArray(),function (index,obj){
+            formDataObj.append(obj.name,obj.value)//[{},{},{}]
+        })
+        //添加文件
+        formDataObj.append('avatar',$('#myfile')[0].files[0])
+        $.ajax({
+            url:'',
+            type:'post',
+            data:formDataObj,
+            //两个关键性参数
+            contentType:false,
+            processData:false,
+            success:function (args){
+                if(args.code===1000)
+                {
+                    window.location.href=args.url
+                }
+                else
+                {
+                    $.each(args.msg,function (index,obj)
+                    {
+                        let targetId='#id_'+index;
+                        $(targetId).next().text(obj[0]).parent().addClass('has-error')//链式同时操作span的父标签div
+                        //obj为数组
+                        //同时操作报错信息和添加has-error
+                    })
+                }
+            }
+        })
+    })
+
+    $('input').click(function (){
+        //修改span和div
+        $(this).next().text('').parent().removeClass('has-error')
+    })
+
+</script>
+</body>
+</html>

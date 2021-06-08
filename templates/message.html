@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table class="table-hover table table-bordered">
+        <thead>
+            <tr>
+                <th>商品名</th>
+                <th>数量</th>
+                <th>生产厂家</th>
+                <th>单位</th>
+                <th>型号</th>
+                <th>规格</th>
+                <th>日期</th>
+                <th>负责人</th>
+                <th>类型</th>
+            </tr>
+        </thead>
+    <tbody>
+    {% for message in new_message_list %}
+    <tr>
+        <td>{{ message.name.name }}</td>
+        <td>{{ message.count }}</td>
+        <td>{{ message.factory.name }}</td>
+        <td>{{ message.unit }}</td>
+        <td>{{ message.name.type }}</td>
+        <td>{{ message.name.standard }}</td>
+        <td>{{ message.date|date:'Y-m-d' }}</td>
+        <td>{{ message.person }}</td>
+        {% if message.flag %}
+            <td>入库</td>
+        {% else %}
+            <td>出库</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    <div class="pull-right">
+        {{ page_obj.page_html|safe }}
+    </div>
+
+
+
+{% endblock %}

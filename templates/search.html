@@ -1,0 +1,28 @@
+{% extends 'base.html'%}
+
+
+{% block content%}
+     <table class="table-hover table table-bordered">
+        <thead>
+            <tr>
+                <th>厂名</th>
+                <th>厂址</th>
+                <th>邮箱</th>
+                <th>联系电话</th>
+            </tr>
+        </thead>
+    <tbody>
+    {% for factory in factory_query %}
+    <tr>
+        <td>{{ factory.name }}</td>
+        <td>{{ factory.addr }}</td>
+        <td>{{ factory.email }}</td>
+        <td>{{ factory.phone }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    <div class="pull-right">
+        {{ page_obj.page_html|safe }}
+    </div>
+{% endblock%}

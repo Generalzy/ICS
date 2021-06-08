@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    {% load static %}
+    <script src="{% static 'js/jQuery3.6.0.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/sweetalert.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sweetalert.css' %}">
+    {% block css %}
+    {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/media/{{ request.user.avatar }}" style="padding-top: 0px">
+        <img alt="企业标识" src="/media/{{ request.user.avatar }}" width="50">
+      </a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">{{ request.user.username }}<span class="sr-only">(current)</span></a></li>
+{#        <li><a href="#">Link</a></li>#}
+{#        <li class="dropdown">#}
+{#          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>#}
+{#          <ul class="dropdown-menu">#}
+{#            <li><a href="#">Action</a></li>#}
+{#            <li><a href="#">Another action</a></li>#}
+{#            <li><a href="#">Something else here</a></li>#}
+{#            <li role="separator" class="divider"></li>#}
+{#            <li><a href="#">Separated link</a></li>#}
+{#            <li role="separator" class="divider"></li>#}
+{#            <li><a href="#">One more separated link</a></li>#}
+{#          </ul>#}
+{#        </li>#}
+      </ul>
+{#      <form class="navbar-form navbar-left">#}
+{#        <div class="form-group">#}
+{#          <input type="text" class="form-control" placeholder="Search">#}
+{#        </div>#}
+{#        <button type="submit" class="btn btn-default">Submit</button>#}
+{#      </form>#}
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">更多 <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href='#' data-toggle="modal" data-target="#mymodal" id="set_password">修改密码</a></li>
+            <li><a href="#">企业信息</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">商业合作</a></li>
+          </ul>
+        </li>
+          <li><a href="{% url 'logout' %}">退出登录</a></li>
+      </ul>
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="mymodal">
+            <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <h1 class="text-center">修改密码</h1>
+                      <div class="row">
+                          <div class="col-md-8 col-md-offset-2">
+                              <div class="form_group">
+                                  <label for="">用户名</label>
+                                  <input type="text" disabled value="{{ request.user.username }}" class="form-control">
+                              </div>
+                              <div class="form_group">
+                                  <label for="">原密码</label>
+                                  <input type="text" class="form-control" id="old_password">
+                              </div>
+                              <div class="form_group">
+                                  <label for="">新密码</label>
+                                  <input type="password" id="new_password" class="form-control">
+                              </div>
+                              <div class="form_group">
+                                  <label for="">确认密码</label>
+                                  <input type="password" id="confirm_password" class="form-control">
+                              </div>
+                              <br>
+                              <div class="pull-right">
+                                  <span style="color: red" id="password_error"></span>
+                                  <button type="button" class="btn btn-default " data-dismiss="modal">取消</button>
+                                  &nbsp;&nbsp;
+                                  <button class="btn btn-primary" id="edit">修改</button>
+                              </div>
+                              <br>
+                              <br>
+                              <br>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="list-group">
+              <a href="#" class="list-group-item active">
+                功能
+              </a>
+              <a href="{% url 'commodity' %}" class="list-group-item">库存信息查询</a>
+              <a href="{% url 'message' %}" class="list-group-item">出入库查询</a>
+              <a href="{% url 'edit' %}" class="list-group-item">出入库单据录入</a>
+                <a href="{% url 'search' %}" class="list-group-item">工厂信息查询</a>
+            </div>
+        </div>
+        <div class="col-md-10">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+    {% block script %}
+        <script>
+        $('#edit').click(function (){
+        $.ajax({
+            url:'/set/password/',
+            type:'post',
+            data:{
+                'new_password':$('#new_password').val(),
+                'confirm_password':$('#confirm_password').val(),
+                'old_password':$('#old_password').val(),
+                'csrfmiddlewaretoken':'{{ csrf_token }}'
+            },
+            success:function (args)
+            {
+                if(args.code===1000)
+                {
+                    window.location.href='/login/'
+                }
+                else if(args.code===1001)
+                {
+                    $('3confirm_password').parent().addClass('has-error')
+                    $('#password_error').text(args.msg)
+                }
+                else if(args.code===1002)
+                {
+                    $('#old_password').parent().addClass('has-error')
+                    $('#password_error').text(args.msg)
+                }
+                else if(args.code===1003)
+                {
+                    $('#new_password').parent().addClass('has-error')
+                    $('#password_error').text(args.msg)
+                }
+            }
+        })
+    })
+    $('#old_password').click(function (){
+        $(this).parent().removeClass('has-error')
+        $('#password_error').text('')
+    })
+    $('#new_password').click(function (){
+        $(this).parent().removeClass('has-error')
+        $('#password_error').text('')
+    })
+    $('#confirm_password').click(function (){
+        $(this).parent().removeClass('has-error')
+        $('#password_error').text('')
+    })
+    $('#set_password').click(function (){
+        $('#password_error').text('')
+        $('#old_password').parent().removeClass('has-error')
+        $('#new_password').parent().removeClass('has-error')
+        $('#confirm_password').parent().removeClass('has-error')
+    })
+        </script>
+    {% endblock %}
+</body>
+</html>

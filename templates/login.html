@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    {% load static %}
+    <script src="{% static 'js/jQuery3.6.0.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/sweetalert.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sweetalert.css' %}">
+    <style>
+		body{
+			background-image: url({% static 'img/face.jpg' %});
+            background-size: 100% auto;
+		}
+	</style>
+</head>
+<body>
+    <div class="container-fluid">
+
+    <div class="page-header text-center">
+        <h1 style="font-family:楷体;font-size: 50px;color: #d58512">方正库存管理系统</h1>
+    </div>
+
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-md-3 col-md-offset-8"style="background-color: white">
+            <h1 class="text-center">登录</h1>
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" name="username" class="form-control" id="username">
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" name="password" class="form-control" id="password">
+            </div>
+            <div class="pull-right">
+                <a href="{% url 'register' %}">点击注册</a>
+            </div>
+            <br>
+            <br>
+            <input type="button" class="btn btn-success form-control" value="登录" id="login">
+            <span style="color: red" id="error"></span>
+            <br>
+            <br>
+        </div>
+    </div>
+</div>
+<script>
+    $('#login').click(function ()
+    {
+       $.ajax({
+           url:'',
+           type:'post',
+           data:{
+               'username':$('#username').val(),
+               'password':$('#password').val(),
+               'code':$('#id_code').val(),
+               'csrfmiddlewaretoken':'{{ csrf_token }}'
+           },
+           success:function (args)
+           {
+               if(args['code']===1000)
+               {
+                   window.location.href=args.url
+               }
+               else{
+                   $('#error').text(args.msg)
+               }
+           }
+       })
+    })
+    $('#password').click(function ()
+    {
+        $('#error').text('')
+    })
+
+</script>
+</body>
+</html>
